@@ -3,11 +3,11 @@ const Post = require('./Post');
 const Comment = require('./Comment');
 
 User.hasMany(Post, {
-  foreignKey: 'userId'
+  foreignKey: 'userId',
 });
 
 User.hasMany(Comment, {
-  foreignKey: 'postId'
+  foreignKey: 'postId',
 });
 
 Post.belongsTo(User, {

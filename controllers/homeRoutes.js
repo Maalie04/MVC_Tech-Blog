@@ -7,7 +7,7 @@ router.get('/', (req, res) => {
         include: [
             {
                 model: Comment,
-                attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+                attributes: ['id', 'comment', 'post_id', 'user_id', 'created_at'],
                 include: {
                     model: User,
                     attributes: ['username']
@@ -34,7 +34,7 @@ router.get('/', (req, res) => {
 
 });
 
-router..get('/login', (req, res) => {
+router.get('/login', (req, res) => {
     if(req.session.loggegIn) {
         res.redirect('/');
         return;
