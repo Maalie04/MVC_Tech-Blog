@@ -24,3 +24,18 @@ async function editPostHandler(event){
     }
 };
 
+async function deletePostHandler(){
+    const response = await fetch('/api/post/${id}', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' }
+    });
+
+    if(response.ok){
+        document.location.replace('/dashboard')
+    }else{
+        alert(response.statusText)
+    }
+};
+
+document.querySelector('.edit-post-form').addEventListener('submit', editPostHandler);
+document.querySelector('.delete-post-btn').addEventListener('click', deletePostHandler);
