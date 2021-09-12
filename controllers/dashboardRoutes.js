@@ -1,12 +1,25 @@
 const router = require('express').Router();
 const withAuth = require('../utils/auth')
-const { User, Post, Comment } = require('../models');
+const {  Post } = require('../models');
 
-router.get('/', withAuth, (req, res) => {
+router.get('/', withAuth, async (req, res) => {
+
+    // res.render("dashboard")
+    try{
+        const postData = await Post.findAll({
+            where: {
+                user_id: req.session.user_id
+            },
+            
+        })
+        const posts = postData.map(post => post.get({ plain: true }));
+        console.log(posts)
+        res.render("dashboard")
+    }
+    catch(err){
+        console.log("failed to load dashboard paige")
+    }
     Post.findAll({
-        where: {
-            user_id: req.session.user_id
-        },
         include: [{
             model: Comment,
             attributes: ['id', 'comment', 'post_id', 'user_id', 'created_at'],
@@ -17,8 +30,7 @@ router.get('/', withAuth, (req, res) => {
         }]
     })
     .then(postData => {
-        const posts = postData.map(post => post.get({ plain: true }));
-
+console.log(posts)
         res.render('dashboard', {
             posts,
             loggedIn: req.session.loggedIn
@@ -28,6 +40,12 @@ router.get('/', withAuth, (req, res) => {
         console.log(err);
         res.status(500).json(err);
     })
+});
+
+router.get('/add', withAuth, (req, res) => {
+    res.render('add-posts', {
+        loggedIn: res.session.loggedIn
+    });
 });
 
 router.get('/edit/:id', withAuth, (req, res) => {
