@@ -1,23 +1,30 @@
-async function addPostHandler(event){
+const addPostHandler = async (event) => {
     event.preventDefault();
-
-    const title = document.querySelector('#postTitle').nodeValue.trim();
-    const text = document.querySelector('textarea[name="postText').nodeValue.trim();
-
-    const response = await fetch('/api/posts', {
+  
+    // Collect values from the new post form
+    const title = document.querySelector('#post-title').value.trim();
+    const text = document.querySelector('#post-text').value.trim();
+  
+    // Create a new post if both fields contain content
+    if (title && text) {
+      const response = await fetch('/api/post', {
         method: 'POST',
-        body: JSON.stringify({
-            title,
-            text
-        }),
-        headers: { 'ContentType': 'application/json'}
-    }),
-
-    if(response.ok){
-        document.location.replace('/dashboard')
-    } else {
-        alert(response.statusText)
+        body: JSON.stringify({ title, text }),
+        headers: { 'Content-Type': 'application/json'},
+      });
+  
+      // If successful return the browser to the dashboard
+      if (response.ok) {
+        document.location.replace('/dashboard');
+      } else {
+        alert(response.statusText);
+      }
     }
-};
+  }
+  
+  document.querySelector('#add-post').addEventListener('submit', addPostHandler);
 
-document.querySelector('.add-post').addEventListener('submit', addPostHandler);
+
+
+
+

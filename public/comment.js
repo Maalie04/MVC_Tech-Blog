@@ -3,7 +3,7 @@ async function commentFormHandler(event) {
 
     const comText = document.querySelector('textarea[name="comment-body"]').nodeValue.trim();
 
-    const postId = window.location.toString().split('/')[
+    const post_id = window.location.toString().split('/')[
         window.location.toString().split('/').length -1
     ];
 
@@ -12,7 +12,7 @@ async function commentFormHandler(event) {
             method: 'POST',
             body:  JSON.stringify({
                 comText,
-                postId
+                post_id
             }),
             headers: { 'Content-Type': 'application/json' }
         });
@@ -25,4 +25,4 @@ async function commentFormHandler(event) {
     }
 };
 
-document.querySelector('.comment-form').addEventListener('submit',commentFormHandler);
+document.querySelector('.comment-form').addEventListener('submit', commentFormHandler);

@@ -10,7 +10,7 @@
 
     <div class="comments-wrapper">
         <h2>Comments</h2>
-        {{comments post.comments}}
+        {{format_plural post.comments}}
     </div>
 
     {{#if loggedIn}}
