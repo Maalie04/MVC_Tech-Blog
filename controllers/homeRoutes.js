@@ -60,43 +60,41 @@ router.get('/signup', (req, res) => {
     res.render('signup');
 });
 
-router.get('/post/:id', (req, res) => {
-    Post.findOne({
-        where: {
-            id: req.params.id
-        },
+router.get('/post/:id', async (req, res) => {
+   try {
+       const postData = await Post.findByPk(req.params.id, {
         include: [
             {
-                model: Comment,
-                
-                include: {
-                    model: User
-                    
-                }
-            },
-            {
+              model: Comment,
+              attributes: ['content', 'post_id', 'user_id', 'date_created'],
+              include: {
                 model: User,
                 attributes: ['username']
-            }
-        ]
-    })
-    .then(dbPostData => {
-        if (!dbPostData) {
-            res.status(404).json({ message: 'No post found at this id!' })
+              }
+            },
+            {
+              model: User,
+              attributes: ['username'],
+            },
+          ],
+        });
+
+        if (!postData) {
+            res.render('404');
+            return;
         }
 
-        const post = dbPostData.get({ plain: true });
+        const post = postData.get({ plain: true });
 
-        res.render('singlePost', {
-            post,
+        res.render('post', {
+            ...post,
             logged_in: req.session.logged_in
-        })
-    })
-    .catch(err => {
-        console.log(err);
+        });
+    } catch (err) {
         res.status(500).json(err);
-    })
-})
+    }
+});
+
 
 router.get('/addPost', (req, res) => {
     res.render('addPost');
