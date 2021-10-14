@@ -1,117 +1,114 @@
-const router = require('express').Router();
-const { Post, User, Comment } = require('../../models');
-const withAuth = require('../../utils/auth');
+const router = require("express").Router();
+const { Post, User, Comment } = require("../../models");
+const withAuth = require("../../utils/auth");
 
-router.get('/', (req, res) => {
+router.get("/", (req, res) => {
   Post.findAll({
-    order: [['created_at', 'DESC']],
+    order: [["created_at", "DESC"]],
     include: [
       {
         model: Comment,
-        attributes: ['id', 'comment', 'post_id', 'user_id', 'created_at'],
+        attributes: ["id", "comment", "post_id", "user_id", "created_at"],
         include: {
           model: User,
-          attributes: ['username']
-        }
+          attributes: ["username"],
+        },
       },
       {
         model: User,
-        attributes: ['username']
-      }
-    ]
+        attributes: ["username"],
+      },
+    ],
   })
-  .then(postData => res.json(postData))
-  .catch(err => {
-    console.log(err);
-    res.status(500).json(err);
-  })
+    .then((postData) => res.json(postData))
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json(err);
+    });
 });
 
-router.get('/:id', (req, res) => {
+router.get("/:id", (req, res) => {
   Post.findOne({
     where: {
-      id: req.params.id
+      id: req.params.id,
     },
     include: [
       {
         model: Comment,
-        attributes: ['id', 'comment', 'user_id', 'post_id', 'created_at'],
+        attributes: ["id", "comment", "user_id", "post_id", "created_at"],
         include: {
           model: User,
-          attributes: ['username']
-        }
+          attributes: ["username"],
+        },
       },
       {
         model: User,
-        attributes: ['username']
+        attributes: ["username"],
+      },
+    ],
+  })
+    .then((postData) => {
+      if (!postData) {
+        res.status(404).json({ message: "No post found!" });
       }
-    ]
-  })
-  .then(postData => {
-    if(!postData) {
-      res.status(404).json({ message: "No post found!"})
-    }
-    res.json(postData)
-  })
-  .catch(err => {
-    console.log(err);
-    res.status(500).json(err);
-  })
-});
-
-router.post('/', withAuth, (req, res) => {
- 
-  Post.create({
-      title: req.body.title,
-      text: req.body.text,
-      // user_id: req.session.user_id,
+      res.json(postData);
     })
-    .then(postData => res.json(postData))
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
       res.status(500).json(err);
-    })
+    });
 });
 
-router.put('/:id', withAuth, (req, res) => {
+router.post("/", withAuth, (req, res) => {
+  Post.create({
+    title: req.body.title,
+    text: req.body.text,
+    user_id: req.session.user_id,
+  })
+    .then((postData) => res.json(postData))
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json(err);
+    });
+});
 
+router.put("/:id", withAuth, (req, res) => {
   Post.update(req.body, {
     where: {
-      id: req.params.id
-    }
+      id: req.params.id,
+    },
   })
-  .then(postData => {
-    if(!postData) {
-      res.status(404).json({ message: 'No post found!'});
-      return;
-    }
-    res.json(postData);
-  })
-  .catch(err => {
-    console.log(err);
-    res.status(500).json(err);
-  })
-});
-
-router.delete('/:id', withAuth, (req, res) => {
-  
-  Post.destroy({
-      where: {
-        id: req.params.id,
-        user_id: req.session.user_id,
-      }
-    })
-    .then(postData => {
+    .then((postData) => {
       if (!postData) {
-        res.status(404).json({ message: 'No post found' });
+        res.status(404).json({ message: "No post found!" });
         return;
       }
-  res.json(postData)
+      res.json(postData);
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
       res.status(500).json(err);
+    });
+});
+
+router.delete("/:id", withAuth, (req, res) => {
+  Post.destroy({
+    where: {
+      id: req.params.id,
+      user_id: req.session.user_id,
+    },
+  })
+    .then((postData) => {
+      if (!postData) {
+        res.status(404).json({ message: "No post found" });
+        return;
+      }
+      res.json(postData);
     })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json(err);
+    });
 });
 
 module.exports = router;

@@ -6,8 +6,8 @@
         <ol> 
             {{#each posts as |post|}}
             <li>
-                {{post-info post}}
-                <a href="/dashboard/edit/{{post.id}}" class="edit-link">Edit post</a>>
+                {{>post post}}
+                <a href="/dashboard/edit/{{post.id}}" class="edit-link">Edit post</a>
             </li>
             {{/each}}
         </ol>
@@ -17,4 +17,4 @@
     <a href="/dashboard/add" class="add-post-btn">Add a post</a>
 </article>
 
-<script src="/addPost.js"></script>
+<script src="./comment.js"></script>

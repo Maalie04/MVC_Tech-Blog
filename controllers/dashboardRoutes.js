@@ -1,31 +1,23 @@
 const router = require('express').Router();
 const withAuth = require('../utils/auth')
-const {  Post } = require('../models');
+const {  Post, User, Comment } = require('../models');
 
+// brings up authorized user post
+// successfully reloads new post
 router.get('/', withAuth, async (req, res) => {
-
+console.log("**************************************************")
     Post.findAll({
         where: {
             user_id: req.session.user_id
         },
-        include: [
-            {
-                model: Comment,
-                attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
-                include: {
-                    model: User,
-                    attributes: ['username']
-                }
-            },
-            {
-                model: User,
-                attributes: ['username']
-            }
-        ]
+        
+            include: [User],
+        
     })
         .then(dbPostData => {
+            console.log(dbPostData)
             const posts = dbPostData.map(post => post.get({ plain: true }));
-
+console.log(posts)
             res.render('dashboard', {
                 posts,
                 loggedIn: req.session.loggedIn
@@ -37,6 +29,7 @@ router.get('/', withAuth, async (req, res) => {
         })
 });
 
+// tested and works
 router.get('/add', withAuth, (req, res) => {
     res.render('addPost', {
         logged_in: req.session.logged_in
@@ -70,7 +63,7 @@ router.get('/edit/:id', withAuth, (req, res) => {
 
         const post = postData.get({ plain: true });
 
-        res.render('edit', {
+        res.render('editPost', {
             post,
             loggedIn: req.session.loggedIn
         })

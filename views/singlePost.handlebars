@@ -2,28 +2,31 @@
     <article class="post">
         <div class="title-wrapper">
             <h2 class="title">{{post.title}}</h2>
-            <p>Posted by {{user.username}} on {{format_date post.createdAt}}</p>
+            <p>Posted by {{post.user.username}} on {{format_date post.createdAt}}</p>
         </div>
         <div class="post-text">
             {{post.text}}
         </div>
+    </article>
 
     <div class="comments-wrapper">
         <h2>Comments</h2>
-        {{format_plural post.comments}}
+      {{> comment post.comments }}
     </div>
 
-    {{#if loggedIn}}
+    {{#if logged_in}}
     <form class="comment-form">
         <div>
             <textarea name="comment-body"></textarea>
         </div>
         <div>
             <button type="submit">Add Comment</button>
+           
         </div>
     </form>
     {{/if}}
  </article>
- {{#if loggedIn}}
- <script src="/public/comment.js"></script>
- {{/if}}
+
+  <script src="/comment.js"></script>
+
+ 

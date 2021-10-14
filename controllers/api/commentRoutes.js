@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { Comment } = require('../../models');
+const { Comment, User, Post } = require('../../models');
 const withAuth = require('../../utils/auth');
 
 router.get('/', (req, res) => {
@@ -11,18 +11,37 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', withAuth, async (req, res) => {
-  try {
-      const newComment = await Comment.create({
-          ...req.body,
-          comment: req.body.content,
-          post_id: req.post_id,
-          user_id: req.session.user_id,
-      });
+    Comment.create({
+        comment: req.body.comment,
+        user_id: req.session.user_id,
+        post_id: req.body.post_id
+    })
+        .then(dbCommentData => res.json(dbCommentData))
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
+        })
+});
 
-      res.status(200).json(newComment);
-  } catch (err) {
-      res.status(400).json(err);
-  }
+router.put('/:id', withAuth, (req,res) => {
+    Comment.update({
+        comment: req.body.comment
+    },{
+        where: {
+            id: req.params.id
+        }
+    })
+    .then(commentData => {
+        if(!commentData) {
+            res.status(404).json({ message: 'No comment found with this id'});
+            return;
+        }
+        res.json(commentData);
+      
+    })
+    .catch(err => {
+        console.log(err);
+    });
 });
 
 router.delete('/:id', withAuth,  (req, res) => {
