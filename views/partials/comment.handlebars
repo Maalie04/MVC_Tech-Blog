@@ -3,16 +3,18 @@
 <div class="comment">
     
     {{#each this}}
-    <section class="card">
+    <div class="card">
         <div class="card-header">
             <h6 class="mt-2 text-dark cardd subtitle"><i class="fas fa-user mr-2">{{ user.username }}</i></h6>
-            </div>>
+            </div>
             <div class="card-body">
+                <div class="text">
                 {{comment}}
             </div>
-    </section>
+            </div>
+    </div>
+    <p class="card-footer date"> Comment by {{ user.username }}  on {{created_at}} {{ format_date createdAt }}</p>
     {{/each}}
 </div>
 
 
-<script src="/comment.js"></script>
