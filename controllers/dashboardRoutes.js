@@ -40,7 +40,7 @@ router.get("/edit/:id", withAuth, (req, res) => {
     where: {
       id: req.params.id,
     },
-    attributes: ["id", "title", "text"],
+    attributes: ["id", "title", "text", ],
     include: [
       {
         model: User,
@@ -57,7 +57,7 @@ router.get("/edit/:id", withAuth, (req, res) => {
       if (!postData) {
         res.status(404).json({ message: "No post found!" });
       }
-
+console.log(postData)
       const post = postData.get({ plain: true });
 
       res.render("editPost", {

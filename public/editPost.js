@@ -3,7 +3,7 @@ async function editPostHandler(event){
     event.preventDefault();
 
     const title = document.querySelector('input[name="post-title"]').value.trim();
-    const text = document.querySelector('textarea[name="post-text"]').value.trim();
+    const text = document.querySelector('input[name="post-text"]').value.trim();
 
     console.log(title);
     console.log(text);
@@ -24,7 +24,7 @@ async function editPostHandler(event){
 console.log(`${id}`)
 
     if(response.ok){
-        document.location.replace('/dashboard');
+        document.location.replace('/dashboard/');
     }else {
         alert(response.statusText)
     }

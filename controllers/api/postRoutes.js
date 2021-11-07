@@ -5,23 +5,16 @@ const withAuth = require("../../utils/auth");
 
 router.get("/", (req, res) => {
   Post.findAll({
-    order: [["created_at", "DESC"]],
-    include: [
-      {
-        model: Comment,
-        attributes: ["id", "comment", "post_id", "user_id", "created_at"],
-        include: {
-          model: User,
-          attributes: ["username"],
-        },
-      },
-      {
-        model: User,
-        attributes: ["username"],
-      },
-    ],
+    attributes: ['id', 'title', 'text', 'created_at'],
+    order: [ ['created_at', 'DESC'] ],
+    include: [{ model: User, attributes: ['username']},
+    {
+      model: Comment,
+      attributes: ['id', 'comment', 'post_id', 'user_id', 'created_at'],
+    },
+]
   })
-    .then((postData) => res.json(postData))
+    .then((postData) => res.json(postData.reverse()))
     .catch((err) => {
       console.log(err);
       res.status(500).json(err);
@@ -31,23 +24,29 @@ router.get("/", (req, res) => {
 router.get("/:id", (req, res) => {
   Post.findOne({
     where: {
-      id: req.params.id,
+        id: req.params.id
     },
-    include: [
-      {
-        model: Comment,
-        attributes: ["id", "comment", "user_id", "post_id", "created_at"],
-        include: {
-          model: User,
-          attributes: ["username"],
-        },
-      },
-      {
-        model: User,
-        attributes: ["username"],
-      },
+    attributes: ['id',
+        'title',
+        'text',
+        'created_at'
     ],
-  })
+
+    include: [{
+        model: User,
+        attributes: ['username']
+    },
+    {
+        model: Comment,
+        attributes: ['id', 'comment', 'post_id', 'user_id', 'created_at'],
+        include: {
+            model: User,
+            attributes: ['username']
+        }
+
+    }
+    ]
+})
     .then((postData) => {
       if (!postData) {
         res.status(404).json({ message: "No post found!" });
